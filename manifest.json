@@ -1,0 +1,28 @@
+{
+  "manifest_version": 2,
+  "name": "livereloaded",
+  "version": "1.0",
+
+  "description": "connects to the livereload 2 server",
+
+  "icons": {
+    "48": "icons/livereloaded.svg",
+    "96": "icons/livereloaded.svg"
+  },
+
+  "background": {
+    "scripts": ["livereloaded.js"]
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": {
+      "19": "icons/livereloaded.svg",
+      "38": "icons/livereloaded.svg"
+    },
+    "default_title": "connect to livereload server"
+  }
+
+}
