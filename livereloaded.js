@@ -2,6 +2,10 @@
 let enabledTabs = []
 
 const toolbarButtonHandler = tab => {
+  if (enabledTabs.some(t => t.id === tab.id)) {
+    return
+  }
+
   enabledTabs.push(tab)
 
   browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id })
