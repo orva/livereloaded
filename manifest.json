@@ -14,7 +14,8 @@
     "scripts": ["livereloaded.js"]
   },
   "permissions": [
-    "*://localhost/*"
+    "*://localhost/*",
+    "*://127.0.0.1/*"
   ],
   "browser_action": {
     "browser_style": true,
