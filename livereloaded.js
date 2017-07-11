@@ -1,6 +1,12 @@
 // State, contains tabs which have livereloading enabled.
 let enabledTabs = []
 
+const injectScript = tabId =>
+  browser.tabs.executeScript(tabId, {
+    file: 'livereload-script-tag-injector.js'
+  })
+  .then(() => browser.tabs.sendMessage(tabId, { command: "inject" }))
+
 const toolbarButtonHandler = tab => {
   if (enabledTabs.some(t => t.id === tab.id)) {
     return
@@ -11,9 +17,7 @@ const toolbarButtonHandler = tab => {
   browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id })
   browser.browserAction.setBadgeBackgroundColor({ color: "#1496bb", tabId: tab.id })
 
-  return browser.tabs.executeScript(tab.id, {
-    file: 'livereload-script-tag-injector.js'
-  })
+  return injectScript(tab.id)
 }
 
 const tabRemovedHandler = id => {
@@ -27,9 +31,7 @@ const tabChangedHandler = (id, changedInfo) => {
     return
   }
 
-  browser.tabs.executeScript(et.id, {
-    file: 'livereload-script-tag-injector.js'
-  })
+  return injectScript(et.id)
 }
 
 browser.browserAction.onClicked.addListener(toolbarButtonHandler)
