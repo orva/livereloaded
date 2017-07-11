@@ -3,7 +3,11 @@ let enabledTabs = []
 
 const toolbarButtonHandler = tab => {
   enabledTabs.push(tab)
-  browser.tabs.executeScript(tab.id, {
+
+  browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id })
+  browser.browserAction.setBadgeBackgroundColor({ color: "#1496bb", tabId: tab.id })
+
+  return browser.tabs.executeScript(tab.id, {
     file: 'livereload-script-tag-injector.js'
   })
 }
