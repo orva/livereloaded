@@ -1,15 +1,28 @@
-// State, contains tabs which have livereloading enabled.
+// State, contains tabs which have livereloading enabled. This needs to stored
+// (globally) in background script, as `livereload.js` script does what name
+// says: it reloads the tab, trashing all state inside.
 let enabledTabs = [];
 
 const removeTabFromState = id => {
-  // This should probably be redundant
+  // This probably is redundant as the tab is closed and this state is lost forever
   browser.browserAction.setBadgeText({ text: "", tabId: id });
+  browser.browserAction.setTitle({ title: "Enable livereload", tabId: id });
 
   const newState = enabledTabs.filter(et => et.id !== id);
   enabledTabs = newState;
 };
 
 const storeTabToState = tab => {
+  browser.browserAction.setBadgeBackgroundColor({
+    color: "#1496bb",
+    tabId: tab.id
+  });
+  browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id });
+  browser.browserAction.setTitle({
+    title: "Disable livereload",
+    tabId: tab.id
+  });
+
   if (!enabledTabs.some(t => t.id === tab.id)) {
     enabledTabs.push(tab);
   }
@@ -17,11 +30,6 @@ const storeTabToState = tab => {
 
 const injectScript = tab => {
   storeTabToState(tab);
-  browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id });
-  browser.browserAction.setBadgeBackgroundColor({
-    color: "#1496bb",
-    tabId: tab.id
-  });
 
   return browser.tabs
     .executeScript(tab.id, {
