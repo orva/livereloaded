@@ -1,6 +1,6 @@
 (() => {
-  const isLivereloadAvailable = (host, port) => {
-    const req = new Request(`${host}:${port}/livereload.js`, {
+  const isURLAvailable = url => {
+    const req = new Request(url, {
       method: "HEAD",
       redirect: "follow"
     });
@@ -8,17 +8,23 @@
     return fetch(req).then(resp => resp.ok).catch(() => false);
   };
 
-  const injectLivereload = () => {
-    const host = "http://localhost";
-    const port = 35729;
+  const getHostname = () => {
+    const u = new URL(document.URL);
+    return `${u.protocol}//${u.hostname}`;
+  };
 
-    return isLivereloadAvailable(host, port).then(isAvailable => {
+  const injectLivereload = () => {
+    const host = getHostname();
+    const port = 35729;
+    const url = `${host}:${port}/livereload.js`;
+
+    return isURLAvailable(url).then(isAvailable => {
       if (!isAvailable) {
         return;
       }
 
       const script = document.createElement("script");
-      script.setAttribute("src", `${host}:${port}/livereload.js`);
+      script.setAttribute("src", url);
       document.head.appendChild(script);
     });
   };
