@@ -27,7 +27,9 @@ const injectScript = tab => {
     .executeScript(tab.id, {
       file: "livereload-script-tag-injector.js"
     })
-    .then(() => browser.tabs.sendMessage(tab.id, { command: "inject" }));
+    .then(() =>
+      browser.tabs.sendMessage(tab.id, { command: "inject", port: 35729 })
+    );
 };
 
 const removeScript = tab => {

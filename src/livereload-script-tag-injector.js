@@ -13,9 +13,8 @@
     return `${u.protocol}//${u.hostname}`;
   };
 
-  const injectLivereload = () => {
+  const injectLivereload = port => {
     const host = getHostname();
-    const port = 35729;
     const url = `${host}:${port}/livereload.js`;
 
     return isURLAvailable(url).then(isAvailable => {
@@ -32,7 +31,7 @@
   browser.runtime.onMessage.addListener(msg => {
     switch (msg.command) {
       case "inject":
-        injectLivereload();
+        injectLivereload(msg.port);
         break;
       default:
         break;
