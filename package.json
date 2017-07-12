@@ -3,8 +3,15 @@
   "version": "0.0.1",
   "description": "Firefox livereload addon",
   "scripts": {
+    "lint": "eslint src/**/*.js",
+    "format": "eslint --fix src/**/*.js"
   },
   "author": "Iivari Äikäs",
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "eslint": "^4.2.0",
+    "eslint-plugin-prettier": "^2.1.2",
+    "prettier": "^1.5.2"
+  }
 }
