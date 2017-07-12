@@ -13,28 +13,37 @@
     return `${u.protocol}//${u.hostname}`;
   };
 
+  const reportCouldNotConnect = url => {
+    /* eslint-disable no-console */
+    console.error(`livereloaded: could not find livereload script at ${url}`);
+    console.error(`livereloaded: check that livereload server is running`);
+    /* eslint-enable no-console */
+  };
+
   const injectLivereload = port => {
     const host = getHostname();
     const url = `${host}:${port}/livereload.js`;
 
     return isURLAvailable(url).then(isAvailable => {
       if (!isAvailable) {
-        return;
+        reportCouldNotConnect(url);
+        return false;
       }
 
       const script = document.createElement("script");
       script.setAttribute("src", url);
       document.head.appendChild(script);
+
+      return true;
     });
   };
 
   browser.runtime.onMessage.addListener(msg => {
     switch (msg.command) {
       case "inject":
-        injectLivereload(msg.port);
-        break;
+        return injectLivereload(msg.port);
       default:
-        break;
+        return false;
     }
   });
 })();

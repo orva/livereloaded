@@ -29,7 +29,12 @@ const injectScript = tab => {
     })
     .then(() =>
       browser.tabs.sendMessage(tab.id, { command: "inject", port: 35729 })
-    );
+    )
+    .then(injectWasSuccesful => {
+      if (!injectWasSuccesful) {
+        removeTabFromState(tab.id);
+      }
+    });
 };
 
 const removeScript = tab => {
