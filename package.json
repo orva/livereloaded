@@ -1,0 +1,10 @@
+{
+  "name": "livereloaded",
+  "version": "0.0.1",
+  "description": "Firefox livereload addon",
+  "scripts": {
+  },
+  "author": "Iivari Äikäs",
+  "license": "UNLICENSED",
+  "private": true
+}
