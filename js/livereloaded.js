@@ -1,3 +1,5 @@
+const prefs = require("./preferences.js");
+
 // State, contains tabs which have livereloading enabled. This needs to stored
 // (globally) in background script, as `livereload.js` script does what name
 // says: it reloads the tab, trashing all state inside.
@@ -35,13 +37,14 @@ const injectScript = tab => {
     .executeScript(tab.id, {
       file: "livereload-script-tag-injector.js"
     })
-    .then(() =>
-      browser.tabs.sendMessage(tab.id, { command: "inject", port: 35729 })
-    )
+    .then(() => prefs.fetchDefaultPort())
+    .then(port => browser.tabs.sendMessage(tab.id, { command: "inject", port }))
     .then(injectWasSuccesful => {
       if (!injectWasSuccesful) {
         removeTabFromState(tab.id);
       }
+
+      return true;
     });
 };
 
