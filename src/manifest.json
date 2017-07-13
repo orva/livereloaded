@@ -3,12 +3,18 @@
   "name": "livereloaded",
   "description": "Connects to the livereload 2 server and injects livereload script to the current page",
   "version": "1.0.0",
+  "applications": {
+    "gecko": {
+      "id": "livereloaded@orva.fi"
+    }
+  },
   "icons": {
     "48": "icons/livereloaded.svg",
     "96": "icons/livereloaded.svg"
   },
   "author": "Iivari Äikäs",
   "permissions": [
+    "storage",
     "*://localhost/*",
     "*://127.0.0.1/*"
   ],
@@ -19,5 +25,9 @@
     "browser_style": true,
     "default_icon": "icons/livereloaded.svg",
     "default_title": "Enable livereload"
+  },
+  "options_ui": {
+    "browser_style": true,
+    "page": "options.html"
   }
 }
