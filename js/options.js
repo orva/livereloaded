@@ -1,15 +1,7 @@
-const DEFAULT_PORT = 35729;
-const fetchDefaultPort = () =>
-  browser.storage.sync
-    .get("defaultPort")
-    .then(d => d.defaultPort || DEFAULT_PORT);
-const setDefaultPort = port => {
-  const defaultPort = port || DEFAULT_PORT;
-  return browser.storage.sync.set({ defaultPort }).then(() => defaultPort);
-};
+const prefs = require("./preferences.js");
 
 const restoreFromStorege = () =>
-  fetchDefaultPort().then(port => {
+  prefs.fetchDefaultPort().then(port => {
     const portInput = document.getElementsByClassName("default-port-input")[0];
     portInput.value = port;
   });
@@ -27,12 +19,14 @@ const bindListeners = () => {
 
     portInput.classList.remove("broken-input");
     const port = parseInt(val, 10);
-    return setDefaultPort(port);
+    return prefs.setDefaultPort(port);
   });
 
   const reset = document.getElementsByClassName("reset-port-button")[0];
   reset.addEventListener("click", () =>
-    setDefaultPort(DEFAULT_PORT).then(port => (portInput.value = port))
+    prefs
+      .setDefaultPort(prefs.DEFAULT_PORT)
+      .then(port => (portInput.value = port))
   );
 };
 
