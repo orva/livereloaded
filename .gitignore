@@ -1,1 +1,4 @@
 node_modules
+addon/livereload-script-tag-injector.js
+addon/livereloaded.js
+addon/options.js

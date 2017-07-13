@@ -1,10 +1,12 @@
 {
   "name": "livereloaded",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Firefox livereload addon",
   "scripts": {
-    "lint": "eslint src/**/*.js",
-    "format": "eslint --fix src/**/*.js"
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "lint": "eslint js/**/*.js webpack.config.js",
+    "format": "eslint --fix js/**/*.js webpack.config.js"
   },
   "author": "Iivari Äikäs",
   "license": "UNLICENSED",
@@ -12,6 +14,7 @@
   "devDependencies": {
     "eslint": "^4.2.0",
     "eslint-plugin-prettier": "^2.1.2",
-    "prettier": "^1.5.2"
+    "prettier": "^1.5.2",
+    "webpack": "^3.2.0"
   }
 }
