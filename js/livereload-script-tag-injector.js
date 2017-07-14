@@ -14,8 +14,10 @@ const getHostname = () => {
 
 const reportCouldNotConnect = url => {
   /* eslint-disable no-console */
-  console.error(`livereloaded: could not find livereload script at ${url}`);
-  console.error(`livereloaded: check that livereload server is running`);
+  console.error("livereloaded: could not find livereload script at", url);
+  console.error(
+    "livereloaded: check that livereload server is running or set correct port in the addon preferences"
+  );
   /* eslint-enable no-console */
 };
 
