@@ -3,6 +3,17 @@ const prefs = require("./preferences.js");
 // State, contains tabs which have livereloading enabled. This needs to stored
 // (globally) in background script, as `livereload.js` script does what name
 // says: it reloads the tab, trashing all state inside.
+//
+// From this addons point of view tab can be in three possible states:
+//
+// 1. livereloaded content script is active in tab and livereload script is injected to the DOM
+//    (tab is stored to the enabledTabs with livereloadInjected: true)
+// 2. livereloaded content script is active in the tab, but livereload script could not be injected
+//    (tab is stored to the enabledTabs with livereloadInjected:false)
+// 3. tab is not relevant for this addon
+//
+// Each entry in enabledTabs is object in form of:
+// { tab: browser.tabs.Tab, livereloadInjected: bool }
 let enabledTabs = [];
 
 const removeTabFromState = id => {
