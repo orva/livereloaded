@@ -57,7 +57,7 @@ const startContentScript = tab => {
     : Promise.resolve(false);
 };
 
-const injectScript = tab => {
+const injectLivereloadScript = tab => {
   return startContentScript(tab)
     .then(() => prefs.fetchDefaultPort())
     .then(port => browser.tabs.sendMessage(tab.id, { command: "inject", port }))
@@ -71,7 +71,7 @@ const injectScript = tab => {
     });
 };
 
-const removeScript = tab => {
+const removeLivereloadScript = tab => {
   removeTabFromState(tab.id);
   return browser.tabs.reload(tab.id);
 };
@@ -80,9 +80,9 @@ const toggleLivereload = tab => {
   toggleButtonState(tab);
 
   if (enabledTabs.some(t => t.id === tab.id)) {
-    return removeScript(tab);
+    return removeLivereloadScript(tab);
   } else {
-    return injectScript(tab);
+    return injectLivereloadScript(tab);
   }
 };
 
@@ -92,7 +92,7 @@ const tabChangedHandler = (id, changedInfo) => {
     return;
   }
 
-  return injectScript(tab);
+  return injectLivereloadScript(tab);
 };
 
 browser.browserAction.onClicked.addListener(toggleLivereload);
