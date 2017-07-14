@@ -13,7 +13,10 @@ const removeTabFromState = id => {
 const storeTabToState = tab => {
   if (!enabledTabs.some(t => t.id === tab.id)) {
     enabledTabs.push(tab);
+    return true;
   }
+
+  return false;
 };
 
 const toggleButtonState = tab => {
@@ -42,13 +45,20 @@ const toggleButtonState = tab => {
     });
 };
 
-const injectScript = tab => {
-  storeTabToState(tab);
+const startContentScript = tab => {
+  const tabRequiresContentScript = storeTabToState(tab);
 
-  return browser.tabs
-    .executeScript(tab.id, {
-      file: "livereload-script-tag-injector.js"
-    })
+  return tabRequiresContentScript
+    ? browser.tabs
+        .executeScript(tab.id, {
+          file: "livereload-script-tag-injector.js"
+        })
+        .then(() => true)
+    : Promise.resolve(false);
+};
+
+const injectScript = tab => {
+  return startContentScript(tab)
     .then(() => prefs.fetchDefaultPort())
     .then(port => browser.tabs.sendMessage(tab.id, { command: "inject", port }))
     .then(injectWasSuccesful => {
