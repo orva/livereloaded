@@ -6,28 +6,40 @@ const prefs = require("./preferences.js");
 let enabledTabs = [];
 
 const removeTabFromState = id => {
-  // This probably is redundant as the tab is closed and this state is lost forever
-  browser.browserAction.setBadgeText({ text: "", tabId: id });
-  browser.browserAction.setTitle({ title: "Enable livereload", tabId: id });
-
   const newState = enabledTabs.filter(et => et.id !== id);
   enabledTabs = newState;
 };
 
 const storeTabToState = tab => {
+  if (!enabledTabs.some(t => t.id === tab.id)) {
+    enabledTabs.push(tab);
+  }
+};
+
+const toggleButtonState = tab => {
+  const ON_TEXT = "ON";
   browser.browserAction.setBadgeBackgroundColor({
     color: "#1496bb",
     tabId: tab.id
   });
-  browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id });
-  browser.browserAction.setTitle({
-    title: "Disable livereload",
-    tabId: tab.id
-  });
 
-  if (!enabledTabs.some(t => t.id === tab.id)) {
-    enabledTabs.push(tab);
-  }
+  return browser.browserAction
+    .getBadgeText({ tabId: tab.id })
+    .then(badgeText => {
+      if (badgeText === ON_TEXT) {
+        browser.browserAction.setBadgeText({ text: "", tabId: tab.id });
+        browser.browserAction.setTitle({
+          title: "Enable livereload",
+          tabId: tab.id
+        });
+      } else {
+        browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id });
+        browser.browserAction.setTitle({
+          title: "Disable livereload",
+          tabId: tab.id
+        });
+      }
+    });
 };
 
 const injectScript = tab => {
@@ -41,6 +53,7 @@ const injectScript = tab => {
     .then(port => browser.tabs.sendMessage(tab.id, { command: "inject", port }))
     .then(injectWasSuccesful => {
       if (!injectWasSuccesful) {
+        toggleButtonState(tab);
         removeTabFromState(tab.id);
       }
 
@@ -54,6 +67,8 @@ const removeScript = tab => {
 };
 
 const toggleLivereload = tab => {
+  toggleButtonState(tab);
+
   if (enabledTabs.some(t => t.id === tab.id)) {
     return removeScript(tab);
   } else {
