@@ -6,13 +6,13 @@ const prefs = require("./preferences.js");
 let enabledTabs = [];
 
 const removeTabFromState = id => {
-  const newState = enabledTabs.filter(et => et.id !== id);
+  const newState = enabledTabs.filter(et => et.tab.id !== id);
   enabledTabs = newState;
 };
 
 const storeTabToState = tab => {
-  if (!enabledTabs.some(t => t.id === tab.id)) {
-    enabledTabs.push(tab);
+  if (!enabledTabs.some(t => t.tab.id === tab.id)) {
+    enabledTabs.push({ tab, livereloadInjected: false });
     return true;
   }
 
@@ -20,29 +20,27 @@ const storeTabToState = tab => {
 };
 
 const toggleButtonState = tab => {
-  const ON_TEXT = "ON";
   browser.browserAction.setBadgeBackgroundColor({
     color: "#1496bb",
     tabId: tab.id
   });
 
-  return browser.browserAction
-    .getBadgeText({ tabId: tab.id })
-    .then(badgeText => {
-      if (badgeText === ON_TEXT) {
-        browser.browserAction.setBadgeText({ text: "", tabId: tab.id });
-        browser.browserAction.setTitle({
-          title: "Enable livereload",
-          tabId: tab.id
-        });
-      } else {
-        browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id });
-        browser.browserAction.setTitle({
-          title: "Disable livereload",
-          tabId: tab.id
-        });
-      }
+  const tabInfo = enabledTabs.find(et => et.tab.id === tab.id);
+  const tabIsOn = tabInfo && tabInfo.livereloadInjected;
+
+  if (tabIsOn) {
+    browser.browserAction.setBadgeText({ text: "ON", tabId: tab.id });
+    browser.browserAction.setTitle({
+      title: "Disable livereload",
+      tabId: tab.id
     });
+  } else {
+    browser.browserAction.setBadgeText({ text: "", tabId: tab.id });
+    browser.browserAction.setTitle({
+      title: "Enable livereload",
+      tabId: tab.id
+    });
+  }
 };
 
 const startContentScript = tab => {
@@ -62,9 +60,9 @@ const injectLivereloadScript = tab => {
     .then(() => prefs.fetchDefaultPort())
     .then(port => browser.tabs.sendMessage(tab.id, { command: "inject", port }))
     .then(injectWasSuccesful => {
-      if (!injectWasSuccesful) {
-        toggleButtonState(tab);
-        removeTabFromState(tab.id);
+      if (injectWasSuccesful) {
+        const tabState = enabledTabs.find(et => et.tab.id === tab.id);
+        tabState.livereloadInjected = true;
       }
 
       return true;
@@ -77,22 +75,24 @@ const removeLivereloadScript = tab => {
 };
 
 const toggleLivereload = tab => {
-  toggleButtonState(tab);
-
-  if (enabledTabs.some(t => t.id === tab.id)) {
-    return removeLivereloadScript(tab);
+  const tabState = enabledTabs.find(t => t.tab.id === tab.id);
+  if (tabState && tabState.livereloadInjected) {
+    return removeLivereloadScript(tab).then(() => toggleButtonState(tab));
   } else {
-    return injectLivereloadScript(tab);
+    return injectLivereloadScript(tab).then(() => toggleButtonState(tab));
   }
 };
 
 const tabChangedHandler = (id, changedInfo) => {
-  const tab = enabledTabs.find(et => et.id === id);
-  if (!tab || changedInfo.status !== "complete") {
+  const tabState = enabledTabs.find(et => et.tab.id === id);
+  if (!tabState || changedInfo.status !== "complete") {
     return;
   }
 
-  return injectLivereloadScript(tab);
+  removeTabFromState(id);
+  return injectLivereloadScript(tabState.tab).then(() =>
+    toggleButtonState(tabState.tab)
+  );
 };
 
 browser.browserAction.onClicked.addListener(toggleLivereload);
