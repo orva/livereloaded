@@ -13,6 +13,7 @@
     "96": "icons/livereloaded.svg"
   },
   "author": "Iivari Äikäs",
+  "homepage_url": "https://github.com/orva/livereloaded",
   "permissions": [
     "storage",
     "*://localhost/*",
