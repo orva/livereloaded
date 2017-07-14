@@ -9,7 +9,7 @@
     "format": "eslint --fix js/**/*.js webpack.config.js"
   },
   "author": "Iivari Äikäs",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "private": true,
   "devDependencies": {
     "eslint": "^4.2.0",
