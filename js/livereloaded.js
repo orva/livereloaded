@@ -32,7 +32,7 @@ const storeTabToState = tab => {
 
 const toggleButtonState = tab => {
   browser.browserAction.setBadgeBackgroundColor({
-    color: "#1496bb",
+    color: "#0a84ff",
     tabId: tab.id
   });
 
