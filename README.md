@@ -1,13 +1,25 @@
 # livereloaded
 
-
 Livereload Firefox addon built on top of modern WebExtension APIs.
 
-Actual work is done by a livereload server and a livereload frontend script.
-Livereloaded enables this by fetching the script from the running livereload server
-and injecting it into DOM.
+This addon easily enables you to use [livereload or some compatible open source
+implementation](#compatible-servers) to reload tab in your browser automatically
+when files are modified. This is achieved by injecting a [livereload.js script]
+served by the livereload server into DOM. So no need to manually edit all HTML
+documents in your application/page to include `<script
+src="<host>:<livereload-port>/livereload.js"></script>` tags!
 
-This should be enough according to a [livereload protocol specification].
+
+## compatible servers
+
+Any server that implements [livereload protocol] __should__ work. Some examples of such
+servers:
+
+- [LiveReload app for Mac]
+- [node-livereload]
+- [grunt-contrib-watch]
+- [rack-livereload]
+- [guard-livereload]
 
 
 ## building
@@ -38,7 +50,14 @@ There are some helper task available if you feel like contributing:
 
 Livereloaded is licensed under MIT. See [LICENSE] for details.
 
-[livereload protocol specification]: http://livereload.com/api/protocol/
+[livereload protocol]: http://livereload.com/api/protocol/
+[livereload.js script]: https://github.com/livereload/livereload-js
+[livereload]: http://livereload.com/
 [LICENSE]: https://github.com/orva/livereloaded/blob/master/LICENSE
 [nodejs]: https://nodejs.org/
+[node-livereload]: https://github.com/napcs/node-livereload
+[rack-livereload]: https://github.com/johnbintz/rack-livereload
+[guard-livereload]: https://github.com/guard/guard-livereload
+[grunt-contrib-watch]: https://github.com/gruntjs/grunt-contrib-watch
 [WebExtension temporary installation in Firefox]: https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox
+[LiveReload app for Mac]: http://livereload.com/
