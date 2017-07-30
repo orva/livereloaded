@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "livereloaded",
   "description": "Livereload addon built on top of modern WebExtension APIs. \n\nActual work is done by a livereload server and a livereload frontend script. Livereloaded enables this by fetching the script from the running livereload server and injecting it into DOM. \n\nThis should be enough according to a livereload protocol specification (http://livereload.com/api/protocol/).",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "applications": {
     "gecko": {
       "id": "livereloaded@orva.fi"
