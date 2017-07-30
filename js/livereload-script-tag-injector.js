@@ -1,10 +1,15 @@
 const isURLAvailable = url => {
-  const req = new Request(url, {
-    method: "HEAD",
-    redirect: "follow"
-  });
+  return new Promise(resolve => {
+    const xhr = new XMLHttpRequest();
 
-  return fetch(req).then(resp => resp.ok).catch(() => false);
+    xhr.timeout = 1000;
+    xhr.onerror = () => resolve(false);
+    xhr.ontimeout = () => resolve(false);
+    xhr.onload = () => (xhr.status === 200 ? resolve(true) : resolve(false));
+
+    xhr.open("HEAD", url);
+    xhr.send();
+  });
 };
 
 const getHostname = () => {
