@@ -30,5 +30,6 @@
   "options_ui": {
     "browser_style": true,
     "page": "options.html"
-  }
+  },
+  "web_accessible_resources": ["lib/livereload.js"]
 }

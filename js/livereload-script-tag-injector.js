@@ -8,8 +8,8 @@ const isURLAvailable = url => {
 };
 
 const getHostname = () => {
-  const u = new URL(document.URL);
-  return `${u.protocol}//${u.hostname}`;
+  const { protocol, hostname } = new URL(document.URL);
+  return { protocol, hostname };
 };
 
 const reportCouldNotConnect = url => {
@@ -21,17 +21,20 @@ const reportCouldNotConnect = url => {
 };
 
 const injectLivereload = port => {
-  const host = getHostname();
-  const url = `${host}:${port}/livereload.js`;
+  const { protocol, hostname } = getHostname();
+  const serverScriptUrl = `${protocol}//${hostname}:${port}/livereload.js`;
 
-  return isURLAvailable(url).then(isAvailable => {
+  return isURLAvailable(serverScriptUrl).then(isAvailable => {
     if (!isAvailable) {
-      reportCouldNotConnect(url);
+      reportCouldNotConnect(`${protocol}//${hostname}`);
       return false;
     }
 
+    const scriptUrl = browser.runtime.getURL("lib/livereload.js");
+    const optedScriptUrl = `${scriptUrl}?host=${hostname}&port=${port}`;
     const script = document.createElement("script");
-    script.setAttribute("src", url);
+    script.setAttribute("src", optedScriptUrl);
+
     document.head.appendChild(script);
 
     return true;
